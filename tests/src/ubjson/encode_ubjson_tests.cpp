@@ -12,6 +12,7 @@
 #include <ctime>
 #include <limits>
 #include <catch/catch.hpp>
+#include "test_utilities.hpp"
 
 using namespace jsoncons;
 using namespace jsoncons::ubjson;
@@ -20,27 +21,6 @@ void check_encode_ubjson(const std::vector<uint8_t>& expected, const json& j)
 {
     std::vector<uint8_t> result;
     encode_ubjson(j, result);
-    if (result.size() != expected.size())
-    {
-        std::cout << std::hex << (int)expected[0] << " " << std::hex << (int)result[0] << std::endl;
-    }
-    REQUIRE(result.size() == expected.size());
-    for (size_t i = 0; i < expected.size(); ++i)
-    {
-        if (expected[i] != result[i])
-        {
-            std::cout << "Different " << i << "\n"; 
-            for (size_t k = 0; k < expected.size(); ++k)
-            {
-                std::cout << std::hex << (int)expected[k] << " " << std::hex << (int)result[k] << std::endl;
-            }
-        }
-        REQUIRE(result[i] == expected[i]);
-    }
-}
-
-void check_encode_ubjson(const std::vector<uint8_t>& expected, const std::vector<uint8_t>& result)
-{
     if (result.size() != expected.size())
     {
         std::cout << std::hex << (int)expected[0] << " " << std::hex << (int)result[0] << std::endl;
@@ -145,7 +125,7 @@ TEST_CASE("encode indefinite length ubjson arrays and maps")
         serializer.string_value("Hello");
         serializer.end_array();
 
-        check_encode_ubjson({'[','S','U',0x05,'H','e','l','l','o',']'}, v);
+        test_equal({'[','S','U',0x05,'H','e','l','l','o',']'}, v);
     }
 
     SECTION("{\"oc\": [0]}")
@@ -157,7 +137,7 @@ TEST_CASE("encode indefinite length ubjson arrays and maps")
         serializer.end_array();
         serializer.end_object();
 
-        check_encode_ubjson({'{','U',0x02,'o','c','[','U',0x00,']','}'}, v);
+        test_equal({'{','U',0x02,'o','c','[','U',0x00,']','}'}, v);
     }
 
     SECTION("{\"oc\": [0,1,2,3]}")
@@ -172,7 +152,7 @@ TEST_CASE("encode indefinite length ubjson arrays and maps")
         serializer.end_array();
         serializer.end_object();
 
-        check_encode_ubjson({'{','U',0x02,'o','c','[','U',0x00,'U',0x01,'U',0x02,'U',0x03,']','}'}, v);
+        test_equal({'{','U',0x02,'o','c','[','U',0x00,'U',0x01,'U',0x02,'U',0x03,']','}'}, v);
     }
 }
 

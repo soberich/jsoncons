@@ -12,9 +12,12 @@
 #include <ctime>
 #include <limits>
 #include <catch/catch.hpp>
+#include "test_utilities.hpp"
 
 using namespace jsoncons;
 using namespace jsoncons::ubjson;
+
+void check_encode_ubjson(const std::vector<uint8_t>& expected, const std::vector<uint8_t>& result);
 
 TEST_CASE("serialize array to ubjson")
 {
@@ -105,3 +108,18 @@ TEST_CASE("Too many and too few items in UBJSON object or array")
         serializer.flush();
     }
 }
+/*
+TEST_CASE("serialize to ubjson optimized format")
+{
+    std::vector<uint8_t> v;
+    ubjson_buffer_serializer serializer(v);
+    serializer.begin_array(3);
+    serializer.int64_value(1);
+    serializer.int64_value(-10);
+    serializer.int64_value(100);
+    serializer.end_array();
+    serializer.flush();
+
+    test_equal(v,{'[','$','i','#','U',3,1,0xf6,100});
+} 
+*/
